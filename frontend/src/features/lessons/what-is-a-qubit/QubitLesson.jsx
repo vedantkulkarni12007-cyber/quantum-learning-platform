@@ -11,18 +11,6 @@ const QubitLesson = () => {
   const [challengeResult, setChallengeResult] = useState(null);
   const [lessonComplete, setLessonComplete] = useState(false);
 
-  const sectionStyle = {
-    backgroundColor: 'white',
-    padding: '2rem',
-    borderRadius: '12px',
-    marginBottom: '2rem',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-    border: '1px solid #f1f5f9'
-  };
-
-  const h2Style = { marginTop: 0, color: '#0f172a', fontSize: '1.5rem', marginBottom: '1rem' };
-  const pStyle = { color: '#475569', lineHeight: '1.7', fontSize: '1.1rem', marginBottom: '1.5rem' };
-
   const quizQuestions = [
     {
       question: "What is the classical equivalent of a qubit?",
@@ -53,165 +41,201 @@ const QubitLesson = () => {
   };
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <Link to="/learn" style={{ display: 'inline-block', marginBottom: '2rem', color: '#3b82f6', textDecoration: 'none', fontWeight: '500' }}>
-        &larr; Back to Curriculum
+    <div className="container" style={{ maxWidth: '900px' }}>
+      <Link to="/learn" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', textTransform: 'uppercase' }}>
+        <span>&larr;</span> BACK TO CURRICULUM
       </Link>
       
-      <h1 style={{ fontSize: '3rem', marginBottom: '2rem', color: '#0f172a' }}>What is a Qubit?</h1>
-
-      <section style={sectionStyle}>
-        <h2 style={h2Style}>1. Classical Bits vs Qubits</h2>
-        <p style={pStyle}>
-          In classical computing, all information is processed using <strong>bits</strong>. A bit can only be in one of two states: <code>0</code> or <code>1</code>.
-        </p>
-        <p style={pStyle}>
-          In quantum computing, the basic unit of information is the <strong>qubit</strong> (quantum bit). We represent the basic states of a qubit using a special notation called Dirac notation: <code>|0⟩</code> and <code>|1⟩</code>.
-        </p>
-        <p style={pStyle}>
-          While a qubit can be in the state <code>|0⟩</code> or <code>|1⟩</code>, its true power comes from its ability to exist in a <strong>superposition</strong>—a complex combination of both states at the same time.
-        </p>
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={h2Style}>2. Interactive Qubit State</h2>
-        <p style={pStyle}>
-          Use the buttons below to switch the state of the qubit. Notice how the probabilities of measuring 0 or 1 change.
-        </p>
-        
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '2rem' }}>
-          {['|0⟩', '|1⟩', '|+⟩'].map(state => (
-            <button
-              key={state}
-              onClick={() => setSelectedState(state)}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: selectedState === state ? '#3b82f6' : '#e2e8f0',
-                color: selectedState === state ? 'white' : '#334155',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontWeight: 'bold',
-                fontSize: '1.1rem'
-              }}
-            >
-              Set to {state}
-            </button>
-          ))}
-        </div>
-        
-        <StateVisualizer stateName={selectedState} />
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={h2Style}>3. Creating Superposition</h2>
-        <p style={pStyle}>
-          To create a superposition, we use quantum gates. The <strong>Hadamard (H) gate</strong> is one of the most important gates. When applied to a qubit in the <code>|0⟩</code> state, it puts the qubit into an equal superposition, known as the <code>|+⟩</code> state.
-        </p>
-        
-        <div style={{ backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: '8px', border: '1px solid #cbd5e1', textAlign: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem', marginBottom: '1.5rem' }}>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>|0⟩</div>
-            <div style={{ fontSize: '2rem', color: '#94a3b8' }}>&rarr;</div>
-            <button 
-              onClick={() => setSuperpositionState(superpositionState === '|0⟩' ? '|+⟩' : '|0⟩')}
-              style={{ padding: '1rem', backgroundColor: '#8b5cf6', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '1.25rem', fontWeight: 'bold' }}
-            >
-              H Gate
-            </button>
-            <div style={{ fontSize: '2rem', color: '#94a3b8' }}>&rarr;</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: superpositionState === '|+⟩' ? '#8b5cf6' : '#1e293b' }}>
-              {superpositionState}
-            </div>
-          </div>
-          <p style={{ margin: 0, fontStyle: 'italic', color: '#64748b' }}>
-            {superpositionState === '|0⟩' 
-              ? "The qubit is in the |0⟩ state. Click the H gate to apply it." 
-              : "The qubit is now in the |+⟩ superposition state! It has a 50% chance of being measured as 0, and 50% as 1."}
-          </p>
-        </div>
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={h2Style}>4. Real Quantum Simulation</h2>
-        <p style={pStyle}>
-          Let's test this on a real quantum simulator. We will send a circuit with 1 qubit, apply an H gate, and measure it 1024 times. The backend <strong>Qiskit Aer</strong> simulator will run the circuit and return the actual measurement counts.
-        </p>
-        
-        <SimulationRunner 
-          circuitDef={{
-            num_qubits: 1,
-            operations: [{ gate: 'H', target: 0 }],
-            shots: 1024
-          }}
-          onSimulationComplete={handleSimComplete}
-        />
-
-        {simResult && (
-          <div style={{ marginTop: '2rem', padding: '1.5rem', backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '8px' }}>
-            <h3 style={{ marginTop: 0, color: '#166534' }}>Explanation of your results:</h3>
-            <p style={{ color: '#15803d', lineHeight: '1.6' }}>
-              The Hadamard gate successfully placed the qubit into an equal superposition. When measured 1024 times, the simulator found the qubit in state <code>0</code> exactly <strong>{simResult.measurement_counts['0']}</strong> times ({(simResult.measurement_counts['0']/1024 * 100).toFixed(1)}%), and in state <code>1</code> exactly <strong>{simResult.measurement_counts['1']}</strong> times ({(simResult.measurement_counts['1']/1024 * 100).toFixed(1)}%).
-            </p>
-            <p style={{ color: '#15803d', lineHeight: '1.6', marginBottom: 0 }}>
-              Notice that the numbers aren't exactly 512 and 512. This is because quantum measurement is fundamentally probabilistic, just like flipping a real coin 1024 times!
-            </p>
-          </div>
-        )}
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={h2Style}>5. Knowledge Check</h2>
-        <Quiz questions={quizQuestions} />
-      </section>
-
-      <section style={sectionStyle}>
-        <h2 style={h2Style}>6. Mini Challenge</h2>
-        <p style={pStyle}>
-          Your task: Create a circuit that results in an approximately 50/50 measurement distribution. 
-          Use the available gate to modify the default <code>|0⟩</code> state.
-        </p>
-        
-        <SimulationRunner 
-          buttonText="Run Challenge Circuit (H Gate)"
-          circuitDef={{
-            num_qubits: 1,
-            operations: [{ gate: 'H', target: 0 }],
-            shots: 1024
-          }}
-          onSimulationComplete={handleChallengeComplete}
-        />
-
-        {challengeResult && (
-          <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px' }}>
-            <h3 style={{ marginTop: 0, color: '#1e40af' }}>Challenge Result</h3>
-            {challengeResult.measurement_counts['0'] > 400 && challengeResult.measurement_counts['1'] > 400 ? (
-              <p style={{ color: '#1d4ed8', margin: 0 }}>✅ <strong>Success!</strong> Your circuit achieved a near 50/50 split using the H gate.</p>
-            ) : (
-              <p style={{ color: '#1d4ed8', margin: 0 }}>❌ Keep trying! The distribution isn't 50/50.</p>
-            )}
-          </div>
-        )}
-      </section>
-
-      <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-        {lessonComplete ? (
-          <div>
-            <div style={{ fontSize: '1.5rem', color: '#166534', fontWeight: 'bold', marginBottom: '1rem' }}>🎉 Lesson Complete!</div>
-            <Link to="/learn/superposition" style={{ padding: '1rem 2rem', backgroundColor: '#4f46e5', color: 'white', textDecoration: 'none', borderRadius: '8px', fontWeight: 'bold', fontSize: '1.1rem' }}>
-              Next Lesson: Superposition &rarr;
-            </Link>
-          </div>
-        ) : (
-          <button 
-            onClick={() => setLessonComplete(true)}
-            style={{ padding: '1rem 2rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1.1rem', boxShadow: '0 4px 6px rgba(16,185,129,0.3)' }}
-          >
-            Mark Lesson Complete
-          </button>
-        )}
+      <div style={{ marginBottom: '4rem' }}>
+        <div className="tech-label" style={{ color: 'var(--accent-blue)', marginBottom: '1rem' }}>EXP-01 // THEORETICAL FOUNDATIONS</div>
+        <h1 style={{ fontSize: '3.5rem', textTransform: 'uppercase' }}>What is a Qubit?</h1>
       </div>
 
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+        
+        {/* SECTION 01: LEARN */}
+        <section className="sci-panel">
+          <div className="tech-label" style={{ marginBottom: '1.5rem', color: 'var(--accent-blue)' }}>01 &mdash; LEARN</div>
+          <h2 style={{ marginBottom: '1.5rem' }}>Classical Bits vs Qubits</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+            <div>
+              <p>In classical computing, all information is processed using <strong>bits</strong>. A bit can only be in one of two states: <code>0</code> or <code>1</code>.</p>
+              <div style={{ marginTop: '1rem', padding: '1rem', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-dark)', fontFamily: 'var(--font-mono)' }}>
+                CLASSICAL_BIT = [0, 1]
+              </div>
+            </div>
+            <div>
+              <p>In quantum computing, the basic unit of information is the <strong>qubit</strong> (quantum bit). We represent the basic states of a qubit using Dirac notation: <code>|0⟩</code> and <code>|1⟩</code>.</p>
+              <div style={{ marginTop: '1rem', padding: '1rem', border: '1px solid var(--border-light)', backgroundColor: 'var(--bg-dark)', fontFamily: 'var(--font-mono)' }}>
+                QUBIT_STATE = α|0⟩ + β|1⟩
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 02: VISUALIZE */}
+        <section className="sci-panel">
+          <div className="tech-label" style={{ marginBottom: '1.5rem', color: 'var(--accent-blue)' }}>02 &mdash; VISUALIZE</div>
+          <h2 style={{ marginBottom: '1.5rem' }}>Interactive Qubit State</h2>
+          <p style={{ marginBottom: '2rem' }}>
+            Use the instrument controls below to prepare the state of the qubit. Observe how the probability distribution responds.
+          </p>
+          
+          <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '2rem' }}>
+            {['|0⟩', '|1⟩', '|+⟩'].map(state => (
+              <button
+                key={state}
+                onClick={() => setSelectedState(state)}
+                style={{
+                  backgroundColor: selectedState === state ? 'var(--bg-panel-light)' : 'transparent',
+                  borderColor: selectedState === state ? 'var(--accent-blue)' : 'var(--border-light)',
+                  color: selectedState === state ? 'var(--accent-blue)' : 'var(--text-secondary)'
+                }}
+              >
+                PREPARE {state}
+              </button>
+            ))}
+          </div>
+          
+          <StateVisualizer stateName={selectedState} />
+        </section>
+
+        {/* SECTION 03: EXPERIMENT */}
+        <section className="sci-panel">
+          <div className="tech-label" style={{ marginBottom: '1.5rem', color: 'var(--accent-blue)' }}>03 &mdash; EXPERIMENT</div>
+          <h2 style={{ marginBottom: '1.5rem' }}>Creating Superposition</h2>
+          <p style={{ marginBottom: '2rem' }}>
+            To create a superposition, we apply a quantum gate. The <strong>Hadamard (H) gate</strong> puts a qubit initially in <code>|0⟩</code> into an equal superposition, known as the <code>|+⟩</code> state.
+          </p>
+          
+          <div style={{ backgroundColor: 'var(--bg-dark)', padding: '3rem 2rem', border: '1px solid var(--border-light)', position: 'relative' }}>
+            {/* Background grid */}
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(var(--border-light) 1px, transparent 1px), linear-gradient(90deg, var(--border-light) 1px, transparent 1px)', backgroundSize: '20px 20px', opacity: 0.1 }} />
+            
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem' }}>
+              <div className="text-mono" style={{ fontSize: '2rem', color: superpositionState === '|0⟩' ? 'var(--text-primary)' : 'var(--text-secondary)' }}>|0⟩</div>
+              <div style={{ height: '2px', width: '40px', backgroundColor: 'var(--border-light)' }}></div>
+              <button 
+                onClick={() => setSuperpositionState(superpositionState === '|0⟩' ? '|+⟩' : '|0⟩')}
+                style={{ 
+                  width: '64px', height: '64px', 
+                  backgroundColor: superpositionState === '|+⟩' ? 'var(--bg-panel-light)' : 'var(--bg-panel)', 
+                  borderColor: superpositionState === '|+⟩' ? 'var(--accent-blue)' : 'var(--border-light)', 
+                  color: superpositionState === '|+⟩' ? 'var(--accent-blue)' : 'var(--text-primary)',
+                  fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 0
+                }}
+              >
+                H
+              </button>
+              <div style={{ height: '2px', width: '40px', backgroundColor: superpositionState === '|+⟩' ? 'var(--accent-blue)' : 'var(--border-light)', transition: 'background-color 0.3s' }}></div>
+              <div className="text-mono" style={{ fontSize: '2rem', color: superpositionState === '|+⟩' ? 'var(--accent-blue)' : 'var(--text-secondary)' }}>
+                {superpositionState}
+              </div>
+            </div>
+            
+            <div style={{ textAlign: 'center', marginTop: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.9rem', color: 'var(--text-dim)' }}>
+              {superpositionState === '|0⟩' 
+                ? "STATUS: DETERMINISTIC STATE. WAITING FOR H GATE OPERATION." 
+                : "STATUS: SUPERPOSITION ACHIEVED. P(0) ≈ 50%, P(1) ≈ 50%."}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 04: SIMULATE & OBSERVE & UNDERSTAND */}
+        <section className="sci-panel">
+          <div className="tech-label" style={{ marginBottom: '1.5rem', color: 'var(--accent-blue)' }}>04 &mdash; SIMULATE / 05 &mdash; OBSERVE / 06 &mdash; UNDERSTAND</div>
+          <h2 style={{ marginBottom: '1.5rem' }}>Real Quantum Simulation</h2>
+          <p style={{ marginBottom: '2rem' }}>
+            We will now dispatch this circuit to the <strong>Qiskit Aer</strong> simulator running on our backend server. It will apply the H gate and measure the qubit 1024 times.
+          </p>
+          
+          <SimulationRunner 
+            circuitDef={{
+              num_qubits: 1,
+              operations: [{ gate: 'H', target: 0 }],
+              shots: 1024
+            }}
+            onSimulationComplete={handleSimComplete}
+          />
+
+          {simResult && (
+            <div style={{ marginTop: '2rem', borderTop: '1px solid var(--border-light)', paddingTop: '2rem' }}>
+              <div className="tech-label" style={{ color: 'var(--accent-amber)', marginBottom: '1rem' }}>ANALYSIS OF MEASUREMENT RESULTS</div>
+              <p>
+                The Hadamard gate successfully placed the qubit into an equal superposition. When measured 1024 times, the simulator collapsed the wavefunction to state <code>0</code> exactly <span className="text-blue">{simResult.measurement_counts['0']}</span> times ({(simResult.measurement_counts['0']/1024 * 100).toFixed(1)}%), and state <code>1</code> exactly <span className="text-amber">{simResult.measurement_counts['1']}</span> times ({(simResult.measurement_counts['1']/1024 * 100).toFixed(1)}%).
+              </p>
+              <p style={{ marginBottom: 0 }}>
+                Notice that the results are not exactly 512 and 512. This variance proves that quantum measurement is fundamentally probabilistic.
+              </p>
+            </div>
+          )}
+        </section>
+
+        {/* SECTION 07: TEST */}
+        <section className="sci-panel">
+          <div className="tech-label" style={{ marginBottom: '1.5rem', color: 'var(--accent-blue)' }}>07 &mdash; TEST</div>
+          <h2 style={{ marginBottom: '1.5rem' }}>Knowledge Check</h2>
+          <Quiz questions={quizQuestions} />
+        </section>
+
+        {/* SECTION 08: CHALLENGE */}
+        <section className="sci-panel">
+          <div className="tech-label" style={{ marginBottom: '1.5rem', color: 'var(--accent-blue)' }}>08 &mdash; CHALLENGE</div>
+          <h2 style={{ marginBottom: '1.5rem' }}>Prepare an Equal Superposition</h2>
+          <p style={{ marginBottom: '2rem' }}>
+            Your task: Dispatch a circuit that results in an approximately 50/50 measurement distribution to prove you can operate the instrument.
+          </p>
+          
+          <SimulationRunner 
+            buttonText="DISPATCH CHALLENGE CIRCUIT"
+            circuitDef={{
+              num_qubits: 1,
+              operations: [{ gate: 'H', target: 0 }],
+              shots: 1024
+            }}
+            onSimulationComplete={handleChallengeComplete}
+          />
+
+          {challengeResult && (
+            <div style={{ 
+              marginTop: '2rem', 
+              padding: '1.5rem', 
+              backgroundColor: challengeResult.measurement_counts['0'] > 400 && challengeResult.measurement_counts['1'] > 400 ? 'rgba(52, 211, 153, 0.1)' : 'rgba(248, 113, 113, 0.1)',
+              border: `1px solid ${challengeResult.measurement_counts['0'] > 400 && challengeResult.measurement_counts['1'] > 400 ? 'var(--accent-green)' : 'var(--accent-red)'}`
+            }}>
+              <div className="tech-label" style={{ color: challengeResult.measurement_counts['0'] > 400 && challengeResult.measurement_counts['1'] > 400 ? 'var(--accent-green)' : 'var(--accent-red)', marginBottom: '0.5rem' }}>SYSTEM VALIDATION RESULT</div>
+              {challengeResult.measurement_counts['0'] > 400 && challengeResult.measurement_counts['1'] > 400 ? (
+                <div className="text-mono text-green">SUCCESS: 50/50 DISTRIBUTION ACHIEVED.</div>
+              ) : (
+                <div className="text-mono text-red">FAILED: DISTRIBUTION IS ASYMMETRIC. RECALIBRATE.</div>
+              )}
+            </div>
+          )}
+        </section>
+
+        <div style={{ textAlign: 'center', padding: '2rem 0', borderTop: '1px solid var(--border-light)' }}>
+          {lessonComplete ? (
+            <div>
+              <div className="tech-label text-green" style={{ fontSize: '1.2rem', marginBottom: '2rem' }}>
+                EXPERIMENT COMPLETE // LOGGED
+              </div>
+              <Link to="/learn/superposition">
+                <button style={{ backgroundColor: 'var(--accent-blue)', color: 'var(--bg-dark)', borderColor: 'var(--accent-blue)' }}>
+                  INITIATE NEXT EXPERIMENT &rarr;
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <button 
+              onClick={() => setLessonComplete(true)}
+              style={{ borderColor: 'var(--accent-green)', color: 'var(--accent-green)' }}
+            >
+              MARK EXPERIMENT COMPLETE
+            </button>
+          )}
+        </div>
+
+      </div>
     </div>
   );
 };

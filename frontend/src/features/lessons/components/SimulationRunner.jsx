@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { simulateCircuit } from '../../../services/quantumApi';
 
-const SimulationRunner = ({ circuitDef, buttonText = "Run Simulation", onSimulationComplete }) => {
+const SimulationRunner = ({ circuitDef, buttonText = "EXECUTE SIMULATION", onSimulationComplete }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [result, setResult] = useState(null);
@@ -25,57 +25,68 @@ const SimulationRunner = ({ circuitDef, buttonText = "Run Simulation", onSimulat
   };
 
   return (
-    <div style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
-      <div style={{ textAlign: 'center', marginBottom: result ? '1.5rem' : '0' }}>
+    <div>
+      <div style={{ marginBottom: '1.5rem' }}>
         <button 
           onClick={runSim}
           disabled={loading}
-          style={{
-            padding: '0.75rem 1.5rem',
-            fontSize: '1rem',
-            backgroundColor: '#8b5cf6',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            fontWeight: 'bold',
-            boxShadow: '0 2px 4px rgba(139,92,246,0.3)'
+          style={{ 
+            borderColor: loading ? 'var(--border-light)' : 'var(--accent-blue)',
+            color: loading ? 'var(--text-dim)' : 'var(--accent-blue)',
+            width: '100%'
           }}
         >
-          {loading ? 'Running on Qiskit Aer...' : buttonText}
+          {loading ? 'TRANSMITTING CIRCUIT TO QISKIT AER...' : buttonText}
         </button>
       </div>
 
       {error && (
-        <div style={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#fee2e2', color: '#b91c1c', borderRadius: '4px' }}>
-          Error: {error}
+        <div style={{ padding: '1rem', border: '1px solid var(--accent-red)', color: 'var(--accent-red)', backgroundColor: 'rgba(248, 113, 113, 0.1)', fontFamily: 'var(--font-mono)' }}>
+          ERR: {error}
         </div>
       )}
 
       {result && (
-        <div>
-          <h4 style={{ margin: '0 0 1rem 0', color: '#1e293b', textAlign: 'center' }}>Simulation Results ({result.metadata.shots} shots)</h4>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
-            {Object.keys(result.measurement_counts).sort().map(key => {
-              const count = result.measurement_counts[key];
+        <div style={{ 
+          backgroundColor: 'var(--bg-dark)', 
+          border: '1px solid var(--border-light)',
+          padding: '2rem'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)', paddingBottom: '1rem', marginBottom: '2rem' }}>
+            <div>
+              <div className="tech-label">BACKEND ENGINE</div>
+              <div className="text-mono">{result.metadata.simulator || 'AerSimulator'}</div>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div className="tech-label">SHOTS</div>
+              <div className="text-mono">{result.metadata.shots}</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {/* Find keys 0 and 1, ensure they exist. Quantum results only return measured keys. We want to show both 0 and 1 explicitly for this lesson. */}
+            {['0', '1'].map(key => {
+              const count = result.measurement_counts[key] || 0;
               const percentage = ((count / result.metadata.shots) * 100).toFixed(1);
-              const barColor = key === '0' ? '#3b82f6' : '#ef4444';
+              const isZero = key === '0';
+              const color = isZero ? 'var(--accent-blue)' : 'var(--accent-amber)';
               
               return (
-                <div key={key} style={{ textAlign: 'center', width: '100px' }}>
-                  <div style={{ fontWeight: 'bold', fontSize: '1.25rem', color: barColor }}>{key}</div>
-                  <div style={{ fontSize: '1.1rem', marginBottom: '0.5rem' }}>{percentage}%</div>
-                  <div style={{ fontSize: '0.9rem', color: '#64748b', marginBottom: '0.5rem' }}>({count} counts)</div>
-                  
-                  <div style={{ height: '100px', backgroundColor: '#e2e8f0', borderRadius: '4px', position: 'relative', overflow: 'hidden' }}>
+                <div key={key}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontFamily: 'var(--font-mono)' }}>
+                    <div style={{ color }}>STATE {key}</div>
+                    <div style={{ display: 'flex', gap: '2rem' }}>
+                      <span style={{ color: 'var(--text-dim)' }}>COUNT: {String(count).padStart(4, '0')}</span>
+                      <span style={{ color }}>{percentage.padStart(4, '0')}%</span>
+                    </div>
+                  </div>
+                  <div style={{ height: '24px', backgroundColor: 'var(--bg-panel-light)', display: 'flex' }}>
                     <div style={{ 
-                      position: 'absolute', 
-                      bottom: 0, 
-                      left: 0, 
-                      right: 0, 
-                      height: `${percentage}%`, 
-                      backgroundColor: barColor,
-                      transition: 'height 0.5s ease'
+                      width: `${percentage}%`, 
+                      backgroundColor: color,
+                      opacity: 0.8,
+                      animation: 'growRight 0.8s ease-out forwards',
+                      transformOrigin: 'left'
                     }}></div>
                   </div>
                 </div>
@@ -84,6 +95,13 @@ const SimulationRunner = ({ circuitDef, buttonText = "Run Simulation", onSimulat
           </div>
         </div>
       )}
+      
+      <style>{`
+        @keyframes growRight {
+          from { transform: scaleX(0); }
+          to { transform: scaleX(1); }
+        }
+      `}</style>
     </div>
   );
 };

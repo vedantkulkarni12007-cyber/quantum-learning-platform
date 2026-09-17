@@ -30,49 +30,52 @@ const SimulatorTest = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <h1>Quantum Simulator Test</h1>
+    <div className="container" style={{ maxWidth: '800px' }}>
+      <div style={{ marginBottom: '3rem' }}>
+        <div className="tech-label text-blue" style={{ marginBottom: '1rem' }}>SYSTEM DIAGNOSTIC</div>
+        <h1 style={{ fontSize: '3rem' }}>Quantum Simulator Test</h1>
+      </div>
       
-      <div style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
-        <h2>1-Qubit Circuit</h2>
-        <p>This will apply a Hadamard (H) gate to Qubit 0 and measure it.</p>
+      <div className="sci-panel" style={{ marginBottom: '2rem' }}>
+        <div className="tech-label" style={{ marginBottom: '1.5rem' }}>TEST: 1-QUBIT CIRCUIT</div>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
+          This will apply a Hadamard (H) gate to Qubit 0 and measure it 1024 times.
+        </p>
+        
         <button 
           onClick={handleSimulate} 
           disabled={loading}
-          style={{
-            padding: '10px 20px',
-            fontSize: '16px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: loading ? 'not-allowed' : 'pointer'
-          }}
+          style={{ width: '100%', borderColor: loading ? 'var(--border-light)' : 'var(--accent-blue)', color: loading ? 'var(--text-dim)' : 'var(--accent-blue)' }}
         >
-          {loading ? 'Simulating...' : 'Simulate'}
+          {loading ? 'INITIATING QISKIT AER SIMULATION...' : 'EXECUTE SIMULATION'}
         </button>
       </div>
 
       {error && (
-        <div style={{ color: 'red', marginBottom: '20px', padding: '10px', backgroundColor: '#ffebee', borderRadius: '4px' }}>
-          <strong>Error: </strong> {error}
+        <div className="sci-panel" style={{ borderColor: 'var(--accent-red)', backgroundColor: 'rgba(248, 113, 113, 0.05)', marginBottom: '2rem' }}>
+          <div className="tech-label text-red" style={{ marginBottom: '1rem' }}>ERROR</div>
+          <div className="text-mono text-red">{error}</div>
         </div>
       )}
 
       {result && (
-        <div style={{ padding: '15px', border: '1px solid #4caf50', borderRadius: '8px', backgroundColor: '#e8f5e9' }}>
-          <h2>Simulation Result</h2>
-          <div style={{ color: 'black' }}>
-            <h3>Measurement Counts:</h3>
-            <pre style={{ backgroundColor: '#fff', padding: '10px', borderRadius: '4px' }}>
-              {JSON.stringify(result.measurement_counts, null, 2)}
-            </pre>
-          </div>
-          <div style={{ color: 'black' }}>
-            <h3>Metadata:</h3>
-            <pre style={{ backgroundColor: '#fff', padding: '10px', borderRadius: '4px' }}>
-              {JSON.stringify(result.metadata, null, 2)}
-            </pre>
+        <div className="sci-panel" style={{ borderColor: 'var(--accent-green)', backgroundColor: 'rgba(52, 211, 153, 0.05)' }}>
+          <div className="tech-label text-green" style={{ marginBottom: '1.5rem' }}>SIMULATION RESULT: SUCCESS</div>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+            <div>
+              <div className="tech-label" style={{ marginBottom: '1rem', color: 'var(--text-secondary)' }}>MEASUREMENT COUNTS</div>
+              <pre className="text-mono" style={{ backgroundColor: 'var(--bg-dark)', padding: '1rem', border: '1px solid var(--border-light)', margin: 0, color: 'var(--text-primary)' }}>
+                {JSON.stringify(result.measurement_counts, null, 2)}
+              </pre>
+            </div>
+            
+            <div>
+              <div className="tech-label" style={{ marginBottom: '1rem', color: 'var(--text-secondary)' }}>METADATA</div>
+              <pre className="text-mono" style={{ backgroundColor: 'var(--bg-dark)', padding: '1rem', border: '1px solid var(--border-light)', margin: 0, color: 'var(--text-primary)', whiteSpace: 'pre-wrap' }}>
+                {JSON.stringify(result.metadata, null, 2)}
+              </pre>
+            </div>
           </div>
         </div>
       )}

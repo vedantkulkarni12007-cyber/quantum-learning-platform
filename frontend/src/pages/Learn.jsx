@@ -4,56 +4,136 @@ import { curriculumData } from '../data/curriculum';
 
 const Learn = () => {
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-      <h1 style={{ color: '#1e293b', marginBottom: '2rem', fontSize: '2.5rem' }}>Quantum Computing Curriculum</h1>
+    <div className="container" style={{ maxWidth: '900px' }}>
       
-      {curriculumData.map((module, idx) => (
-        <div key={idx} style={{ marginBottom: '3rem' }}>
-          <h2 style={{ color: '#334155', borderBottom: '2px solid #e2e8f0', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>
-            {module.category}
-          </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
-            {module.lessons.map(lesson => (
-              <div key={lesson.id} style={{ 
-                backgroundColor: 'white', 
-                padding: '1.5rem', 
-                borderRadius: '8px', 
-                border: '1px solid #e2e8f0',
-                display: 'flex',
-                flexDirection: 'column'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-                  <h3 style={{ margin: 0, color: '#0f172a', fontSize: '1.25rem' }}>{lesson.title}</h3>
-                  <span style={{ 
-                    fontSize: '0.75rem', 
-                    padding: '0.25rem 0.5rem', 
-                    borderRadius: '999px',
-                    backgroundColor: lesson.difficulty === 'Beginner' ? '#dcfce7' : lesson.difficulty === 'Intermediate' ? '#fef08a' : '#fecaca',
-                    color: lesson.difficulty === 'Beginner' ? '#166534' : lesson.difficulty === 'Intermediate' ? '#854d0e' : '#991b1b'
-                  }}>
-                    {lesson.difficulty}
-                  </span>
-                </div>
-                <p style={{ color: '#64748b', fontSize: '0.9rem', flex: 1 }}>{lesson.description}</p>
-                <div style={{ marginTop: '1.5rem' }}>
-                  <Link to={`/learn/${lesson.id}`} style={{
-                    display: 'block',
-                    textAlign: 'center',
-                    padding: '0.5rem',
-                    backgroundColor: '#f1f5f9',
-                    color: '#3b82f6',
-                    textDecoration: 'none',
-                    borderRadius: '4px',
-                    fontWeight: '500'
-                  }}>
-                    Start Lesson
+      <div style={{ marginBottom: '4rem', textAlign: 'center' }}>
+        <div className="tech-label" style={{ color: 'var(--accent-blue)', marginBottom: '1rem' }}>SYSTEM CURRICULUM</div>
+        <h1 style={{ fontSize: '3rem', textTransform: 'uppercase' }}>Quantum Journey</h1>
+        <p style={{ marginTop: '1rem', fontSize: '1.2rem', maxWidth: '600px', margin: '1rem auto' }}>
+          Follow the operational pathway from basic computational states to complex multi-qubit algorithms.
+        </p>
+      </div>
+
+      <div style={{ position: 'relative', paddingLeft: '2rem' }}>
+        {/* Main vertical trunk wire */}
+        <div style={{ 
+          position: 'absolute', 
+          top: 0, 
+          bottom: 0, 
+          left: '7px', 
+          width: '2px', 
+          backgroundColor: 'var(--border-light)' 
+        }} />
+
+        {curriculumData.map((module, mIdx) => (
+          <div key={module.category} style={{ marginBottom: '4rem', position: 'relative' }}>
+            
+            {/* Module Node on wire */}
+            <div style={{
+              position: 'absolute',
+              left: '-2rem', // to center over the wire, 2rem = 32px. Wire is at left:7px relative to parent. 
+              // Wait, parent padding is 2rem (32px). The wire is at left: 7px.
+              // So if node is position relative inside module, left: -2rem brings it to left edge.
+              // left: -30px will place it nicely on the wire.
+            }}>
+               <div style={{
+                 position: 'absolute',
+                 left: '-29px',
+                 top: '5px',
+                 width: '12px',
+                 height: '12px',
+                 backgroundColor: 'var(--bg-dark)',
+                 border: '2px solid var(--accent-blue)',
+                 borderRadius: '50%',
+                 zIndex: 2
+               }} />
+            </div>
+
+            <div className="tech-label" style={{ marginBottom: '0.5rem', color: 'var(--accent-blue)' }}>
+              STAGE {String(mIdx + 1).padStart(2, '0')}
+            </div>
+            <h2 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{module.category}</h2>
+            <p style={{ marginBottom: '2rem' }}>{module.description || 'Master the fundamental theories and operations of quantum mechanics.'}</p>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {module.lessons.map((lesson, lIdx) => {
+                const globalIndex = mIdx * 10 + lIdx + 1; // fake ID for display
+                const isAvailable = lesson.id === 'what-is-a-qubit';
+
+                return (
+                  <Link 
+                    key={lesson.id} 
+                    to={`/learn/${lesson.id}`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <div className="sci-panel" style={{ 
+                      padding: '1.5rem', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '2rem',
+                      transition: 'transform 0.2s',
+                      transform: 'translateX(0)',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateX(8px)'; e.currentTarget.style.borderColor = 'var(--accent-blue)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
+                    >
+                      {/* Sub-wire horizontal connection */}
+                      <div style={{
+                        position: 'absolute',
+                        left: '-2rem',
+                        top: '50%',
+                        width: '2rem',
+                        height: '2px',
+                        backgroundColor: 'var(--border-light)',
+                        zIndex: 0
+                      }} />
+
+                      <div className="tech-label" style={{ 
+                        color: isAvailable ? 'var(--accent-blue)' : 'var(--text-dim)', 
+                        minWidth: '60px' 
+                      }}>
+                        EXP-{String(globalIndex).padStart(2, '0')}
+                      </div>
+
+                      <div style={{ flex: 1 }}>
+                        <h3 style={{ fontSize: '1.25rem', marginBottom: '0.25rem', color: isAvailable ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
+                          {lesson.title}
+                        </h3>
+                        <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                          {lesson.description}
+                        </p>
+                      </div>
+
+                      <div style={{ 
+                        padding: '0.25rem 0.75rem', 
+                        backgroundColor: 'var(--bg-dark)', 
+                        border: '1px solid var(--border-light)',
+                        borderRadius: '2px',
+                        fontSize: '0.8rem',
+                        fontFamily: 'var(--font-mono)',
+                        color: lesson.difficulty === 'Beginner' ? 'var(--accent-green)' : 'var(--accent-amber)'
+                      }}>
+                        {lesson.difficulty}
+                      </div>
+
+                      {!isAvailable && (
+                        <div style={{ color: 'var(--text-dim)' }}>
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0110 0v4"></path>
+                          </svg>
+                        </div>
+                      )}
+                    </div>
                   </Link>
-                </div>
-              </div>
-            ))}
+                );
+              })}
+            </div>
+
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

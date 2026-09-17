@@ -4,40 +4,78 @@ const StateVisualizer = ({ stateName }) => {
   let prob0 = 100;
   let prob1 = 0;
   let title = '|0⟩';
-  let desc = 'The qubit is definitely in state 0.';
-  let visualStyle = { background: '#3b82f6' }; // blue for 0
+  let desc = 'Deterministic State 0';
   
   if (stateName === '|1⟩') {
     prob0 = 0;
     prob1 = 100;
     title = '|1⟩';
-    desc = 'The qubit is definitely in state 1.';
-    visualStyle = { background: '#ef4444' }; // red for 1
+    desc = 'Deterministic State 1';
   } else if (stateName === '|+⟩') {
     prob0 = 50;
     prob1 = 50;
     title = '|+⟩';
-    desc = 'The qubit is in an equal superposition of 0 and 1.';
-    visualStyle = { background: 'linear-gradient(to right, #3b82f6 50%, #ef4444 50%)' };
+    desc = 'Equal Superposition';
   }
 
   return (
-    <div style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #cbd5e1', textAlign: 'center' }}>
-      <h3 style={{ margin: '0 0 1rem 0', color: '#1e293b' }}>State: {title}</h3>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2rem', marginBottom: '1.5rem' }}>
-        <div style={{ width: '80px', height: '80px', borderRadius: '50%', ...visualStyle, border: '3px solid #cbd5e1', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}></div>
-      </div>
+    <div style={{ 
+      backgroundColor: 'var(--bg-dark)', 
+      border: '1px solid var(--border-light)', 
+      position: 'relative'
+    }}>
+      {/* Grid overlay */}
+      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(var(--border-light) 1px, transparent 1px), linear-gradient(90deg, var(--border-light) 1px, transparent 1px)', backgroundSize: '20px 20px', opacity: 0.1 }} />
       
-      <p style={{ color: '#475569', marginBottom: '1rem', fontStyle: 'italic' }}>{desc}</p>
-      
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontWeight: 'bold', color: '#3b82f6' }}>0</div>
-          <div style={{ fontSize: '1.25rem', color: '#0f172a' }}>{prob0}%</div>
+      <div style={{ position: 'relative', padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        
+        {/* Large State Display */}
+        <div className="text-mono" style={{ fontSize: '4rem', color: 'var(--text-primary)', marginBottom: '0.5rem', textShadow: '0 0 20px rgba(226, 232, 240, 0.2)' }}>
+          {title}
         </div>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontWeight: 'bold', color: '#ef4444' }}>1</div>
-          <div style={{ fontSize: '1.25rem', color: '#0f172a' }}>{prob1}%</div>
+        <div className="tech-label" style={{ marginBottom: '4rem', color: 'var(--text-secondary)' }}>
+          {desc}
+        </div>
+        
+        {/* Probability Bars */}
+        <div style={{ display: 'flex', gap: '4rem', width: '100%', maxWidth: '400px' }}>
+          
+          {/* P(0) */}
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <div className="tech-label text-blue">P(0)</div>
+              <div className="text-mono text-blue">{prob0}%</div>
+            </div>
+            <div style={{ height: '4px', backgroundColor: 'var(--bg-panel-light)', position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                top: 0, left: 0, bottom: 0,
+                width: `${prob0}%`,
+                backgroundColor: 'var(--accent-blue)',
+                boxShadow: '0 0 10px var(--accent-blue)',
+                transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}></div>
+            </div>
+          </div>
+
+          {/* P(1) */}
+          <div style={{ flex: 1 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+              <div className="tech-label text-amber">P(1)</div>
+              <div className="text-mono text-amber">{prob1}%</div>
+            </div>
+            <div style={{ height: '4px', backgroundColor: 'var(--bg-panel-light)', position: 'relative' }}>
+              <div style={{
+                position: 'absolute',
+                top: 0, left: 0, bottom: 0,
+                width: `${prob1}%`,
+                backgroundColor: 'var(--accent-amber)',
+                boxShadow: '0 0 10px var(--accent-amber)',
+                transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}></div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

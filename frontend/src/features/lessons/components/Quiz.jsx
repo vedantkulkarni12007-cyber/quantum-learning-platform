@@ -21,77 +21,98 @@ const Quiz = ({ questions }) => {
 
   if (currentIdx >= questions.length) {
     return (
-      <div style={{ padding: '2rem', backgroundColor: '#ecfdf5', borderRadius: '8px', border: '1px solid #6ee7b7', textAlign: 'center' }}>
-        <h3 style={{ color: '#065f46', margin: 0 }}>Quiz Complete!</h3>
-        <p style={{ color: '#047857', marginTop: '0.5rem' }}>Great job testing your knowledge.</p>
+      <div className="sci-panel success" style={{ textAlign: 'center' }}>
+        <div className="tech-label text-green" style={{ marginBottom: '1rem' }}>ASSESSMENT COMPLETE</div>
+        <h3 style={{ marginBottom: '2rem' }}>All parameters within nominal limits.</h3>
         <button 
           onClick={() => { setCurrentIdx(0); setSelectedOption(null); setShowExplanation(false); }}
-          style={{ marginTop: '1rem', padding: '0.5rem 1rem', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
         >
-          Retake Quiz
+          REBOOT ASSESSMENT
         </button>
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-        <h3 style={{ margin: 0, color: '#0f172a' }}>Question {currentIdx + 1} of {questions.length}</h3>
+    <div style={{ backgroundColor: 'var(--bg-dark)', border: '1px solid var(--border-light)' }}>
+      
+      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 2rem', borderBottom: '1px solid var(--border-light)', backgroundColor: 'var(--bg-panel-light)' }}>
+        <div className="tech-label">QUERY {String(currentIdx + 1).padStart(2, '0')} // {String(questions.length).padStart(2, '0')}</div>
+        <div className="tech-label">STATUS: {showExplanation ? 'RESOLVED' : 'AWAITING INPUT'}</div>
       </div>
       
-      <p style={{ fontSize: '1.1rem', color: '#1e293b', marginBottom: '1.5rem' }}>{q.question}</p>
-      
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {q.options.map((opt, idx) => {
-          let bgColor = 'white';
-          let borderColor = '#cbd5e1';
-          if (showExplanation) {
-            if (idx === q.correctIdx) {
-              bgColor = '#dcfce7'; // green
-              borderColor = '#22c55e';
+      <div style={{ padding: '2rem' }}>
+        <p style={{ fontSize: '1.2rem', color: 'var(--text-primary)', marginBottom: '2rem', fontFamily: 'var(--font-sans)' }}>
+          {q.question}
+        </p>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {q.options.map((opt, idx) => {
+            let borderColor = 'var(--border-light)';
+            let textColor = 'var(--text-secondary)';
+            let bg = 'transparent';
+
+            if (showExplanation) {
+              if (idx === q.correctIdx) {
+                borderColor = 'var(--accent-green)';
+                textColor = 'var(--accent-green)';
+                bg = 'rgba(52, 211, 153, 0.05)';
+              } else if (idx === selectedOption) {
+                borderColor = 'var(--accent-red)';
+                textColor = 'var(--accent-red)';
+                bg = 'rgba(248, 113, 113, 0.05)';
+              }
             } else if (idx === selectedOption) {
-              bgColor = '#fee2e2'; // red
-              borderColor = '#ef4444';
+               borderColor = 'var(--accent-blue)';
             }
-          }
 
-          return (
-            <button 
-              key={idx}
-              onClick={() => handleSelect(idx)}
-              style={{
-                textAlign: 'left',
-                padding: '1rem',
-                backgroundColor: bgColor,
-                border: `1px solid ${borderColor}`,
-                borderRadius: '6px',
-                cursor: showExplanation ? 'default' : 'pointer',
-                fontSize: '1rem',
-                color: '#334155'
-              }}
-              disabled={showExplanation}
-            >
-              {opt}
-            </button>
-          );
-        })}
-      </div>
-
-      {showExplanation && (
-        <div style={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#e0f2fe', borderRadius: '6px', border: '1px solid #7dd3fc' }}>
-          <p style={{ margin: 0, color: '#0369a1' }}>
-            <strong>{selectedOption === q.correctIdx ? 'Correct! ' : 'Not quite. '}</strong>
-            {q.explanation}
-          </p>
-          <button 
-            onClick={nextQuestion}
-            style={{ marginTop: '1rem', padding: '0.5rem 1rem', backgroundColor: '#0ea5e9', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-          >
-            Next Question
-          </button>
+            return (
+              <button 
+                key={idx}
+                onClick={() => handleSelect(idx)}
+                style={{
+                  textAlign: 'left',
+                  border: `1px solid ${borderColor}`,
+                  backgroundColor: bg,
+                  color: textColor,
+                  padding: '1rem 1.5rem',
+                  fontFamily: 'var(--font-sans)',
+                  fontSize: '1rem',
+                  textTransform: 'none',
+                  letterSpacing: 'normal'
+                }}
+                disabled={showExplanation}
+              >
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <span className="tech-label" style={{ color: borderColor }}>[{String.fromCharCode(65 + idx)}]</span>
+                  <span>{opt}</span>
+                </div>
+              </button>
+            );
+          })}
         </div>
-      )}
+
+        {showExplanation && (
+          <div style={{ 
+            marginTop: '2rem', 
+            padding: '1.5rem', 
+            borderLeft: `2px solid ${selectedOption === q.correctIdx ? 'var(--accent-green)' : 'var(--accent-red)'}`,
+            backgroundColor: 'var(--bg-panel)'
+          }}>
+            <p style={{ margin: 0, fontFamily: 'var(--font-sans)' }}>
+              <strong style={{ color: selectedOption === q.correctIdx ? 'var(--accent-green)' : 'var(--accent-red)', marginRight: '0.5rem', fontFamily: 'var(--font-mono)' }}>
+                {selectedOption === q.correctIdx ? 'CORRECT // ' : 'INCORRECT // '}
+              </strong>
+              {q.explanation}
+            </p>
+            <div style={{ marginTop: '1.5rem', textAlign: 'right' }}>
+              <button onClick={nextQuestion}>
+                PROCEED TO NEXT &rarr;
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
