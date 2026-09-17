@@ -1,28 +1,30 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import SimulatorTest from './pages/SimulatorTest'
-import './App.css'
-
-function Home() {
-  return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>Quantum Learning Platform</h1>
-      <p>Welcome to the platform.</p>
-      <Link to="/simulator" style={{ color: 'blue', textDecoration: 'underline' }}>
-        Go to Simulator Test
-      </Link>
-    </div>
-  )
-}
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Layout from './components/Layout';
+import Home from './pages/Home';
+import Learn from './pages/Learn';
+import LessonDetail from './pages/LessonDetail';
+import Lab from './pages/Lab';
+import Challenges from './pages/Challenges';
+import Dashboard from './pages/Dashboard';
+import SimulatorTest from './pages/SimulatorTest';
+import './App.css';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/simulator" element={<SimulatorTest />} />
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="learn" element={<Learn />} />
+          <Route path="learn/:lessonId" element={<LessonDetail />} />
+          <Route path="lab" element={<Lab />} />
+          <Route path="challenges" element={<Challenges />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="simulator" element={<SimulatorTest />} />
+        </Route>
       </Routes>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
