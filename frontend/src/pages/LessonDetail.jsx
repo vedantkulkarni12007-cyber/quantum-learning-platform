@@ -1,10 +1,15 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import QubitLesson from '../features/lessons/what-is-a-qubit/QubitLesson';
+import ClassicalVsQuantumLesson from '../features/lessons/classical-vs-quantum/ClassicalVsQuantumLesson';
 
 const LessonDetail = () => {
   const { lessonId } = useParams();
 
+  if (lessonId === 'classical-vs-quantum') {
+    return <ClassicalVsQuantumLesson />;
+  }
+  
   if (lessonId === 'what-is-a-qubit') {
     return <QubitLesson />;
   }

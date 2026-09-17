@@ -58,7 +58,6 @@ const Learn = () => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               {module.lessons.map((lesson, lIdx) => {
                 const globalIndex = mIdx * 10 + lIdx + 1; // fake ID for display
-                const isAvailable = lesson.id === 'what-is-a-qubit';
 
                 return (
                   <Link 
@@ -90,14 +89,14 @@ const Learn = () => {
                       }} />
 
                       <div className="tech-label" style={{ 
-                        color: isAvailable ? 'var(--accent-blue)' : 'var(--text-dim)', 
+                        color: 'var(--accent-blue)', 
                         minWidth: '60px' 
                       }}>
                         EXP-{String(globalIndex).padStart(2, '0')}
                       </div>
 
                       <div style={{ flex: 1 }}>
-                        <h3 style={{ fontSize: '1.25rem', marginBottom: '0.25rem', color: isAvailable ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
+                        <h3 style={{ fontSize: '1.25rem', marginBottom: '0.25rem', color: 'var(--text-primary)' }}>
                           {lesson.title}
                         </h3>
                         <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
@@ -117,14 +116,6 @@ const Learn = () => {
                         {lesson.difficulty}
                       </div>
 
-                      {!isAvailable && (
-                        <div style={{ color: 'var(--text-dim)' }}>
-                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                            <path d="M7 11V7a5 5 0 0110 0v4"></path>
-                          </svg>
-                        </div>
-                      )}
                     </div>
                   </Link>
                 );
