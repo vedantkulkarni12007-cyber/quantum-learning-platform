@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
+import QubitLesson from '../features/lessons/what-is-a-qubit/QubitLesson';
 
 const LessonDetail = () => {
   const { lessonId } = useParams();
@@ -24,6 +25,10 @@ const LessonDetail = () => {
     textTransform: 'uppercase',
     letterSpacing: '0.05em'
   };
+
+  if (lessonId === 'what-is-a-qubit') {
+    return <QubitLesson />;
+  }
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
